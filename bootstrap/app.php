@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Alias for admin-only middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'ensure-utilisateur' => \App\Http\Middleware\EnsureUtilisateur::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\UtilisateurController as AdminUserController;
+use App\Http\Controllers\Auth\UserLoginController;
+use App\Http\Controllers\User\DashboardController;
 
 Route::get('/', function () {
     return inertia('Welcome', [
@@ -36,6 +38,20 @@ Route::middleware('auth')->group(function () {
         Route::post('agents/{agent}/assign-group', [AgentController::class, 'assignGroup'])->name('agents.assignGroup');
         Route::post('groups/{group}/set-supervisor', [GroupController::class, 'setSupervisor'])->name('groups.setSupervisor');
         Route::post('users/{user}/assign-unit', [AdminUserController::class, 'assignUnit'])->name('users.assignUnit');
+    });
+});
+
+// User authentication routes
+Route::prefix('user')->name('user.')->group(function () {
+    Route::middleware('guest:utilisateur')->group(function () {
+        Route::get('login', [UserLoginController::class, 'create'])->name('login');
+        Route::post('login', [UserLoginController::class, 'store']);
+    });
+    
+   
+    Route::middleware(['auth:utilisateur', 'ensure-utilisateur'])->group(function () {
+        Route::post('logout', [UserLoginController::class, 'destroy'])->name('logout');
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
 });
 
